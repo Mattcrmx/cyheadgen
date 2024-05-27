@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fd-watcher"
+name = "cyheadgen"
 authors = [
     { name = "Matthias Cremieux" },
 ]
@@ -29,7 +29,7 @@ ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py38"
 lint.select = [
     "B",
     "D",
