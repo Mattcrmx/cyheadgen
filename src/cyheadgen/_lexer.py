@@ -1,6 +1,10 @@
 """The C header tokenizer."""
 
+import logging
+
 import ply.lex as lex
+
+logger = logging.getLogger(__name__)
 
 keywords = (
     "CHAR",
@@ -28,10 +32,6 @@ keywords = (
 )
 
 keywords_map = {kw.lower(): kw for kw in keywords}
-keywords_map["#ifndef"] = "IFNDEF"
-keywords_map["#define"] = "DEFINE"
-keywords_map["#include"] = "INCLUDE"
-keywords_map["#endif"] = "ENDIF"
 
 tokens = keywords + (
     # Delimiters ( ) [ ] { } , . ; :
@@ -46,6 +46,11 @@ tokens = keywords + (
     "SEMI",
     "COLON",
     "ELLIPSIS",
+    "SHARP",
+    "STAR",
+    "DQUOTE",
+    "LT",
+    "GT",
 )
 
 # Completely ignored characters
@@ -69,6 +74,11 @@ t_PERIOD = r"\."
 t_SEMI = r";"
 t_COLON = r":"
 t_ELLIPSIS = r"\.\.\."
+t_SHARP = r"\#"
+t_STAR = r"\*"
+t_DQUOTE = r'"'
+t_LT = r"\<"
+t_GT = r"\>"
 
 
 def t_ID(t):
@@ -77,13 +87,19 @@ def t_ID(t):
     return t
 
 
-def t_comment(t):
+def t_multiline_comment(t):
     r"""/\*(.|\n)*?\*/"""
     t.lexer.lineno += t.value.count("\n")
 
 
+# skip single and multi line comments
+def t_simple_comment(t):
+    r"""//.*$"""
+    t.lexer.lineno += t.value.count("\n")
+
+
 def t_error(t):
-    print(f"Illegal character {repr(t.value[0])}")
+    logger.debug(f"Illegal character {repr(t.value[0])}")
     t.lexer.skip(1)
 
 
