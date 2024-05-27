@@ -1,0 +1,1 @@
+"""The Cython header generator."""
