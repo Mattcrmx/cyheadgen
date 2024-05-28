@@ -51,7 +51,6 @@ tokens = keywords + (
     "ELLIPSIS",
     "SHARP",
     "STAR",
-    "DQUOTE",
     "PLUS",
     "MINUS",
     "DIVIDE",
@@ -106,7 +105,6 @@ t_COLON = r":"
 t_ELLIPSIS = r"\.\.\."
 t_SHARP = r"\#"
 t_STAR = r"\*"
-t_DQUOTE = r'"'
 t_PLUS = r"\+"
 t_MINUS = r"-"
 t_DIVIDE = r"/"
