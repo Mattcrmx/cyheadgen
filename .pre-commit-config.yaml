@@ -16,6 +16,7 @@ repos:
     rev: 24.4.2
     hooks:
     - id: black
+      exclude: "^src/cyheadgen/_parser.py"
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: "v0.4.4"

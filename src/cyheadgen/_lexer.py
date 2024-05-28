@@ -16,6 +16,9 @@ keywords = (
     "INT",
     "LONG",
     "SHORT",
+    "UNION",
+    "IF",
+    "ELSE",
     "SIGNED",
     "STATIC",
     "STRUCT",
@@ -49,8 +52,35 @@ tokens = keywords + (
     "SHARP",
     "STAR",
     "DQUOTE",
+    "PLUS",
+    "MINUS",
+    "DIVIDE",
     "LT",
     "GT",
+    "LE",
+    "GE",
+    "OR",
+    "AND",
+    "NOT",
+    "LNOT",
+    "CONDOP",
+    "LAND",
+    "LOR",
+    "XOR",
+    "EQ",
+    "NE",
+    "LSHIFT",
+    "RSHIFT",
+    "ICONST",
+    "FCONST",
+    "SCONST",
+    "CCONST",
+    "EQUALS",
+    "LSHIFTEQUAL",
+    "RSHIFTEQUAL",
+    "ANDEQUAL",
+    "XOREQUAL",
+    "OREQUAL",
 )
 
 # Completely ignored characters
@@ -77,8 +107,44 @@ t_ELLIPSIS = r"\.\.\."
 t_SHARP = r"\#"
 t_STAR = r"\*"
 t_DQUOTE = r'"'
+t_PLUS = r"\+"
+t_MINUS = r"-"
+t_DIVIDE = r"/"
 t_LT = r"\<"
 t_GT = r"\>"
+t_OR = r"\|"
+t_LOR = r"\|\|"
+t_AND = r"&"
+t_LAND = r"&&"
+t_NOT = r"~"
+t_LNOT = r"!"
+t_XOR = r"\^"
+t_LSHIFT = r"<<"
+t_RSHIFT = r">>"
+t_EQ = r"=="
+t_NE = r"!="
+t_CONDOP = r"\?"
+t_LE = r"<="
+t_GE = r">="
+
+t_EQUALS = r"="
+t_LSHIFTEQUAL = r"<<="
+t_RSHIFTEQUAL = r">>="
+t_ANDEQUAL = r"&="
+t_OREQUAL = r"\|="
+t_XOREQUAL = r"\^="
+
+# Integer literal
+t_ICONST = r"\d+([uU]|[lL]|[uU][lL]|[lL][uU])?"
+
+# Floating literal
+t_FCONST = r"((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?"
+
+# String literal
+t_SCONST = r"\"([^\\\n]|(\\.))*?\""
+
+# Character constant 'c' or L'c'
+t_CCONST = r"(L)?\'([^\\\n]|(\\.))*?\'"
 
 
 def t_ID(t):

@@ -52,6 +52,7 @@ ban-relative-imports = "parents"
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["D", "R", "S"]
 "src/cyheadgen/_lexer.py" = ["N816", "N802", "D415"]
+"src/cyheadgen/_parser.py" = ["N816", "N802", "D415", "D205", "E501"]
