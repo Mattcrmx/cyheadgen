@@ -8,24 +8,18 @@ logger = logging.getLogger(__name__)
 
 keywords = (
     "CHAR",
-    "CONST",
     "DOUBLE",
     "ENUM",
-    "EXTERN",
     "FLOAT",
     "INT",
     "LONG",
     "SHORT",
     "UNION",
-    "IF",
-    "ELSE",
     "SIGNED",
-    "STATIC",
+    "UNSIGNED",
     "STRUCT",
     "TYPEDEF",
-    "UNSIGNED",
     "VOID",
-    "VOLATILE",
     # Macros
     "DEFINE",
     "IFNDEF",
@@ -40,46 +34,20 @@ tokens = keywords + (
     # Delimiters ( ) [ ] { } , . ; :
     "LPAREN",
     "RPAREN",
-    "LBRACKET",
-    "RBRACKET",
     "LBRACE",
     "RBRACE",
     "COMMA",
-    "PERIOD",
     "SEMI",
     "COLON",
-    "ELLIPSIS",
     "SHARP",
     "STAR",
-    "PLUS",
-    "MINUS",
-    "DIVIDE",
     "LT",
     "GT",
-    "LE",
-    "GE",
-    "OR",
-    "AND",
-    "NOT",
-    "LNOT",
-    "CONDOP",
-    "LAND",
-    "LOR",
-    "XOR",
-    "EQ",
-    "NE",
-    "LSHIFT",
-    "RSHIFT",
     "ICONST",
     "FCONST",
     "SCONST",
     "CCONST",
     "EQUALS",
-    "LSHIFTEQUAL",
-    "RSHIFTEQUAL",
-    "ANDEQUAL",
-    "XOREQUAL",
-    "OREQUAL",
 )
 
 # Completely ignored characters
@@ -94,43 +62,15 @@ def t_NEWLINE(t):
 # Delimiters
 t_LPAREN = r"\("
 t_RPAREN = r"\)"
-t_LBRACKET = r"\["
-t_RBRACKET = r"\]"
 t_LBRACE = r"\{"
 t_RBRACE = r"\}"
 t_COMMA = r","
-t_PERIOD = r"\."
 t_SEMI = r";"
 t_COLON = r":"
-t_ELLIPSIS = r"\.\.\."
 t_SHARP = r"\#"
 t_STAR = r"\*"
-t_PLUS = r"\+"
-t_MINUS = r"-"
-t_DIVIDE = r"/"
 t_LT = r"\<"
 t_GT = r"\>"
-t_OR = r"\|"
-t_LOR = r"\|\|"
-t_AND = r"&"
-t_LAND = r"&&"
-t_NOT = r"~"
-t_LNOT = r"!"
-t_XOR = r"\^"
-t_LSHIFT = r"<<"
-t_RSHIFT = r">>"
-t_EQ = r"=="
-t_NE = r"!="
-t_CONDOP = r"\?"
-t_LE = r"<="
-t_GE = r">="
-
-t_EQUALS = r"="
-t_LSHIFTEQUAL = r"<<="
-t_RSHIFTEQUAL = r">>="
-t_ANDEQUAL = r"&="
-t_OREQUAL = r"\|="
-t_XOREQUAL = r"\^="
 
 # Integer literal
 t_ICONST = r"\d+([uU]|[lL]|[uU][lL]|[lL][uU])?"
