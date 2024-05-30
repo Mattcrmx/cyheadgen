@@ -27,6 +27,10 @@ def p_declaration(p):
 def p_function(p):
     """function : type ID LPAREN parameters RPAREN SEMI
                 | type ID LPAREN VOID RPAREN SEMI
+                | ID ID LPAREN parameters RPAREN SEMI
+                | ID ID LPAREN VOID RPAREN SEMI
+                | ID STAR ID LPAREN parameters RPAREN SEMI
+                | ID STAR ID LPAREN VOID RPAREN SEMI
                 | type STAR ID LPAREN parameters RPAREN SEMI
                 | type STAR ID LPAREN VOID RPAREN SEMI"""
     if "*" in p:
@@ -155,18 +159,30 @@ def p_enumerator(p):
 
 
 def p_parameters(p):
-    """parameters : type ID parameters
-                  | type ID"""
-    if len(p) == 4:
-        p[3].extend(Argument(name=p[2], type=p[1]))
-        p[0] = p[1]
-    else:
+    """parameters : type ID COMMA parameters
+                  | type ID
+                  | type pointer ID
+                  | type pointer ID COMMA parameters"""
+    if len(p) == 3:
         p[0] = [Argument(name=p[2], type=p[1])]
+    elif len(p) == 4:
+        p[0] = [Argument(name=p[3], type=f"{p[1]}{p[2]}")]
+    elif "*" in p[1:]:
+        p[5].append(Argument(name=p[3], type=f"{p[1]}{p[2]}"))
+        p[0] = p[5]
+    else:
+        p[4].append(Argument(name=p[2], type=p[1]))
+        p[0] = p[4]
 
 
 def p_parameter_type_list(p):
     """parameter_type_list : type ID COMMA parameter_type_list
                            | type ID"""
+    if len(p) == 3:
+        p[0] = [Argument(type=p[1], name=p[2])]
+    else:
+        p[4].extend(Argument(type=p[1], name=p[2]))
+        p[0] = p[4]
 
 
 def p_pointer(p):
@@ -236,13 +252,16 @@ def p_empty(p):
     pass
 
 
-def p_error(p):
-    print("Whoa. We're hosed")
+def p_error(t):
+    raise ValueError(f"Error generation production with token {t}")
 
 
 ply_parser = yacc.yacc()
 
 if __name__ == "__main__":
+
+    simple_fn = "CustomStruct *new_args(int interval, int time, char *name, int pid, int stats);"
+    ply_parser.parse(simple_fn, debug=True)
 
     sample_input = """
         #ifndef API_H

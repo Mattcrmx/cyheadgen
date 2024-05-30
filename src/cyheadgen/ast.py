@@ -49,7 +49,7 @@ class Argument:
     """Abstraction for an argument."""
 
     name: str
-    type: Type = int
+    type: Type = "int"
     value: Optional[str] = None
 
     def __post_init__(self):
