@@ -22,12 +22,17 @@ class Type(str, Enum):
     CHAR = "char"
 
 
-@dataclass(frozen=True)
+@dataclass
 class Header(Node):
     """Header Node."""
 
     name: str
     type: Literal["custom", "standard"]
+
+    def __post_init__(self):
+        """Initialize the name."""
+        if self.type == "custom":
+            self.name = self.name.strip('"')
 
     def expand(self):
         """Expand included header."""

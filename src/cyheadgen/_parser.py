@@ -1,9 +1,9 @@
 # flake8: noqa
-import _lexer
+import cyheadgen._lexer as lexer_module
 import ply.yacc as yacc
 from cyheadgen.ast import Function, Header, Macro, Argument, CEnum
 
-tokens = _lexer.tokens
+tokens = lexer_module.tokens
 
 
 def p_header_file(p):
@@ -11,7 +11,7 @@ def p_header_file(p):
                   | declaration header_file
                   | empty"""
     if len(p) == 3:
-        p[2].extend(p[1])
+        p[2].append(p[1])
         p[0] = p[2]
     else:
         p[0] = [p[1]]
@@ -167,11 +167,13 @@ def p_parameters(p):
         p[0] = [Argument(name=p[2], type=p[1])]
     elif len(p) == 4:
         p[0] = [Argument(name=p[3], type=f"{p[1]}{p[2]}")]
+
+    # insert to preserver to arguments order
     elif "*" in p[1:]:
-        p[5].append(Argument(name=p[3], type=f"{p[1]}{p[2]}"))
+        p[5].insert(0, Argument(name=p[3], type=f"{p[1]}{p[2]}"))
         p[0] = p[5]
     else:
-        p[4].append(Argument(name=p[2], type=p[1]))
+        p[4].insert(0, Argument(name=p[2], type=p[1]))
         p[0] = p[4]
 
 
@@ -233,7 +235,7 @@ def p_macro(p):
 
 def p_header(p):
     """header : SHARP INCLUDE SCONST
-              | SHARP INCLUDE LT SCONST GT"""
+              | SHARP INCLUDE LT ID DOT ID GT"""
     if len(p) == 4:
         p[0] = Header(name=p[3], type="custom")
     else:
@@ -260,18 +262,6 @@ ply_parser = yacc.yacc()
 
 if __name__ == "__main__":
 
-    simple_fn = "CustomStruct *new_args(int interval, int time, char *name, int pid, int stats);"
-    ply_parser.parse(simple_fn, debug=True)
-
-    sample_input = """
-        #ifndef API_H
-        #define API_H
-
-        #include "toto.h"
-        #include "titi.h"
-
-        CustomStruct *new_args(int interval, int time, char *name, int pid, int stats);
-        int super_func(float interval, int time, char *name, int pid, int stats);
-
-        #endif // API_H"""
-    ply_parser.parse(sample_input, debug=True)
+    simple_fn = "#endif // API_H"
+    p = ply_parser.parse(simple_fn)
+    print(p)

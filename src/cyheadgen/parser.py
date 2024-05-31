@@ -1,5 +1,9 @@
 """A wrapper for the PLY parser."""
 
+from typing import List
+
+from cyheadgen.ast import Node
+
 from ._parser import ply_parser
 
 
@@ -10,38 +14,30 @@ class CyHeadGenParser:
         """The initialization method."""
         self._parser = ply_parser
 
-    def __call__(self, data: str):
-        """Lex the input string.
+    def __call__(self, data: str, **kwargs) -> List[Node]:
+        """Parse the input string.
 
         Args:
             data: the input string
+            kwargs: the kwargs to pass to the yacc parser
 
         Returns:
-            the tokenized input string.
+            the parsed input string.
         """
-        tokens = []
-        self._parser.input(data)
-        while True:
-            tok = self._parser.token()
-            if not tok:
-                break
-            tokens.append(tok)
-        return tokens
+        return self._parser.parse(data, **kwargs)
 
     @classmethod
-    def parse_file(cls, file_path: str):
+    def parse_file(cls, file_path: str, **kwargs) -> List[Node]:
         """Lex the content of a file.
 
         Args:
             file_path: the path to the file
+            kwargs: the kwargs to pass to the yacc parser
 
         Returns:
-            the tokens corresponding to the file
+            the file parsed
         """
-        lexer = cls()
+        parser = cls()
         with open(file_path) as f:
             data = f.read()
-        return lexer(data)
-
-
-cyheadgen_parser = CyHeadGenParser()
+        return parser(data, **kwargs)
