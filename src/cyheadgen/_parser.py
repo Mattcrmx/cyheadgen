@@ -36,13 +36,13 @@ def p_function(p):
     if "*" in p:
         p[0] = Function(
             name=p[3],
-            tp=f"{p[2]}{p[1]}",
+            type=f"{p[2]}{p[1]}",
             parameters=p[5]
         )
     else:
         p[0] = Function(
             name=p[2],
-            tp=p[1],
+            type=p[1],
             parameters=p[4]
         )
 

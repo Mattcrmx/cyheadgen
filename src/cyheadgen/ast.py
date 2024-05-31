@@ -5,14 +5,6 @@ from enum import Enum
 from typing import List, Literal, Optional
 
 
-class Function:
-    """Function Node."""
-
-    def __init__(self, name: str, tp: str, parameters: List[str]):
-        """Initialization method."""
-        pass
-
-
 class Type(str, Enum):
     """C types."""
 
@@ -77,3 +69,12 @@ class CEnum:
 
     name: str
     attributes: List[Argument]
+
+
+@dataclass
+class Function:
+    """Function Node."""
+
+    name: str
+    type: str
+    parameters: List[Argument]
