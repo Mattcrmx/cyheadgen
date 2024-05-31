@@ -1,11 +1,13 @@
 """Test lexer cases."""
 
+from typing import List
+
 import pytest
 from cyheadgen import CyHeadGenLexer
 
 
-@pytest.fixture
-def lexer():
+@pytest.fixture  # type: ignore[misc]
+def lexer() -> CyHeadGenLexer:
     return CyHeadGenLexer()
 
 
@@ -69,13 +71,13 @@ def lexer():
         ),
         ("#endif // API_H", ["#", "endif"]),  # test the comment discard
     ],
-)
-def test_lexer(lexer, inp, res):
+)  # type: ignore[misc]
+def test_lexer(lexer: CyHeadGenLexer, inp: str, res: List[str]) -> None:
     tokens = lexer(inp)
     assert [t.value for t in tokens] == res
 
 
-def test_separated_statements(lexer):
+def test_separated_statements(lexer: CyHeadGenLexer) -> None:
     inp = """
     #infdef API_H
     #define API_H
@@ -100,7 +102,7 @@ def test_separated_statements(lexer):
     ]
 
 
-def test_multiline_comment(lexer):
+def test_multiline_comment(lexer: CyHeadGenLexer) -> None:
     inp = """
     #ifndef TOTO_H
     #define TOTO_H

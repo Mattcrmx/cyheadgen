@@ -5,6 +5,20 @@ from enum import Enum
 from typing import List, Literal, Optional
 
 
+def _resolve_type(value: str) -> str:
+    """Resolve the type based on the value."""
+    if '"' in value:
+        return Type.CHAR
+    if "." in value:
+        return Type.FLOAT
+    if 32767 < abs(int(value)) < 2147483647:
+        return Type.LONG
+    if abs(int(value)) > 2147483647:
+        return Type.LONG_LONG
+
+    return Type.INT
+
+
 class Node:
     """Node class."""
 
@@ -29,12 +43,12 @@ class Header(Node):
     name: str
     type: Literal["custom", "standard"]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the name."""
         if self.type == "custom":
             self.name = self.name.strip('"')
 
-    def expand(self):
+    def expand(self) -> None:
         """Expand included header."""
         pass
 
@@ -44,7 +58,7 @@ class Macro(Node):
     """Macro Node."""
 
     name: Optional[str]
-    type: Literal["ifndef", "def", "endif"]
+    type: Literal["ifndef", "define", "endif"]
 
 
 @dataclass
@@ -52,26 +66,13 @@ class Argument(Node):
     """Abstraction for an argument."""
 
     name: str
-    type: Type = "int"
+    type: str = "int"
     value: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Initialize the type."""
-        if self.value:
-            self.type = self._resolve_type()
-
-    def _resolve_type(self) -> Type:
-        """Resolve the type based on the value."""
-        if '"' in self.value:
-            return Type.CHAR
-        if "." in self.value:
-            return Type.FLOAT
-        if 32767 < abs(int(self.value)) < 2147483647:
-            return Type.LONG
-        if abs(int(self.value)) > 2147483647:
-            return Type.LONG_LONG
-
-        return Type.INT
+        if self.value is not None:
+            self.type = _resolve_type(value=self.value)
 
 
 @dataclass(frozen=True)

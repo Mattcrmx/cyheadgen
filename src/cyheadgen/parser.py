@@ -1,20 +1,19 @@
 """A wrapper for the PLY parser."""
 
-from typing import List
+from typing import List, Union
 
+from cyheadgen._parser import ply_parser  # type: ignore[attr-defined]
 from cyheadgen.ast import Node
-
-from ._parser import ply_parser
 
 
 class CyHeadGenParser:
     """The Parser Wrapper Class."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """The initialization method."""
         self._parser = ply_parser
 
-    def __call__(self, data: str, **kwargs) -> List[Node]:
+    def __call__(self, data: str, **kwargs: Union[str, bool]) -> List[Node]:
         """Parse the input string.
 
         Args:
@@ -24,10 +23,11 @@ class CyHeadGenParser:
         Returns:
             the parsed input string.
         """
-        return self._parser.parse(data, **kwargs)
+        result: List[Node] = self._parser.parse(data, **kwargs)  # mypy needs some help
+        return result
 
     @classmethod
-    def parse_file(cls, file_path: str, **kwargs) -> List[Node]:
+    def parse_file(cls, file_path: str, **kwargs: Union[str, bool]) -> List[Node]:
         """Lex the content of a file.
 
         Args:

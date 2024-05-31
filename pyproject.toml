@@ -24,9 +24,6 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.mypy]
-ignore_missing_imports = true
-
 [tool.ruff]
 line-length = 100
 target-version = "py38"
@@ -56,3 +53,14 @@ convention = "google"
 "tests/*.py" = ["D", "R", "S"]
 "src/cyheadgen/_lexer.py" = ["N816", "N802", "D415"]
 "src/cyheadgen/_parser.py" = ["N816", "N802", "D415", "D205", "E501"]
+
+
+[tool.mypy]
+files = "src"
+python_version = "3.8"
+ignore_missing_imports = true
+strict = true
+
+[[tool.mypy.overrides]]
+module = "ply.*"
+follow_imports = "skip"

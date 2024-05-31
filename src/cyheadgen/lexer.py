@@ -10,7 +10,7 @@ from cyheadgen._lexer import ply_lexer
 class CyHeadGenLexer:
     """The Lexer Wrapper Class."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """The initialization method."""
         self._lexer = ply_lexer
 

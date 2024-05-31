@@ -1,10 +1,12 @@
+from typing import List
+
 import pytest
-from cyheadgen.ast import Argument, Function, Header, Macro
+from cyheadgen.ast import Argument, Function, Header, Macro, Node
 from cyheadgen.parser import CyHeadGenParser
 
 
-@pytest.fixture
-def parser():
+@pytest.fixture  # type: ignore[misc]
+def parser() -> CyHeadGenParser:
     return CyHeadGenParser()
 
 
@@ -49,6 +51,6 @@ def parser():
         ),
         ("#endif // API_H", [Macro(name=None, type="endif")]),
     ],
-)
-def test_parse_func(parser, inp, res):
+)  # type: ignore[misc]
+def test_parse_func(parser: CyHeadGenParser, inp: str, res: List[Node]) -> None:
     assert parser(inp) == res

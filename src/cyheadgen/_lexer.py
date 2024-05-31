@@ -55,7 +55,7 @@ tokens = keywords + (
 t_ignore = " \t\x0c"
 
 
-def t_NEWLINE(t):
+def t_NEWLINE(t: lex.LexToken) -> None:
     r"""\n+"""
     t.lexer.lineno += t.value.count("\n")
 
@@ -81,24 +81,24 @@ t_SCONST = r"\"([^\\\n]|(\\.))*?\""
 t_CCONST = r"(L)?\'([^\\\n]|(\\.))*?\'"
 
 
-def t_ID(t):
+def t_ID(t: lex.LexToken) -> lex.LexToken:
     r"""[A-Za-z_][\w_]*"""
     t.type = keywords_map.get(t.value, "ID")
     return t
 
 
-def t_multiline_comment(t):
+def t_multiline_comment(t: lex.LexToken) -> None:
     r"""/\*(.|\n)*?\*/"""
     t.lexer.lineno += t.value.count("\n")
 
 
 # skip single and multi line comments
-def t_simple_comment(t):
+def t_simple_comment(t: lex.LexToken) -> None:
     r"""//.*$"""
     t.lexer.lineno += t.value.count("\n")
 
 
-def t_error(t):
+def t_error(t: lex.LexToken) -> None:
     logger.debug(f"Illegal character {repr(t.value[0])}")
     t.lexer.skip(1)
 

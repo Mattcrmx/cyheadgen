@@ -1,4 +1,5 @@
 # flake8: noqa
+# type: ignore
 import cyheadgen._lexer as lexer_module
 import ply.yacc as yacc
 from cyheadgen.ast import Function, Header, Macro, Argument, CEnum
