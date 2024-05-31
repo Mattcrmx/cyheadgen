@@ -15,8 +15,9 @@ The lexer returns `LexToken` which are the token produced by the ply parser, but
 the symbol corresponding to the token.
 ```python
 from cyheadgen import CyHeadGenLexer
-my_func = "int super_func(int arg1, int *arg2);"
 lexer = CyHeadGenLexer()
+
+my_func = "int super_func(int arg1, int *arg2);"
 print([tok.value for tok in lexer(my_func)])  # ['int', 'super_func', '(', 'int', 'arg1', ',', 'int', '*', 'arg2', ')', ';']
 ```
 
@@ -27,6 +28,7 @@ can be change at will.
 ```python
 from cyheadgen import CyHeadGenParser
 parser = CyHeadGenParser()
+
 my_func = "int super_func(int arg1, int *arg2);"
 print(parser(my_func))  # [Function(name='super_func', type='int', parameters=[Argument(name='arg1', type='int', value=None), Argument(name='arg2', type='int*', value=None)])]
 ```
