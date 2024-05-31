@@ -1,6 +1,10 @@
 """A wrapper for the PLY lexer."""
 
-from ._lexer import ply_lexer
+from typing import List
+
+from ply.lex import LexToken
+
+from cyheadgen._lexer import ply_lexer
 
 
 class CyHeadGenLexer:
@@ -10,7 +14,7 @@ class CyHeadGenLexer:
         """The initialization method."""
         self._lexer = ply_lexer
 
-    def __call__(self, data: str):
+    def __call__(self, data: str) -> List[LexToken]:
         """Lex the input string.
 
         Args:
@@ -29,7 +33,7 @@ class CyHeadGenLexer:
         return tokens
 
     @classmethod
-    def tokenize_from_file(cls, file_path: str):
+    def tokenize_from_file(cls, file_path: str) -> List[LexToken]:
         """Lex the content of a file.
 
         Args:
@@ -42,6 +46,3 @@ class CyHeadGenLexer:
         with open(file_path) as f:
             data = f.read()
         return lexer(data)
-
-
-cyheadgen_lexer = CyHeadGenLexer()

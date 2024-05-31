@@ -5,6 +5,12 @@ from enum import Enum
 from typing import List, Literal, Optional
 
 
+class Node:
+    """Node class."""
+
+    pass
+
+
 class Type(str, Enum):
     """C types."""
 
@@ -17,7 +23,7 @@ class Type(str, Enum):
 
 
 @dataclass(frozen=True)
-class Header:
+class Header(Node):
     """Header Node."""
 
     name: str
@@ -29,7 +35,7 @@ class Header:
 
 
 @dataclass(frozen=True)
-class Macro:
+class Macro(Node):
     """Macro Node."""
 
     name: Optional[str]
@@ -37,7 +43,7 @@ class Macro:
 
 
 @dataclass
-class Argument:
+class Argument(Node):
     """Abstraction for an argument."""
 
     name: str
@@ -64,7 +70,7 @@ class Argument:
 
 
 @dataclass(frozen=True)
-class CEnum:
+class CEnum(Node):
     """Enum Node."""
 
     name: str
@@ -72,7 +78,7 @@ class CEnum:
 
 
 @dataclass
-class Function:
+class Function(Node):
     """Function Node."""
 
     name: str

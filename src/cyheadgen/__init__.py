@@ -1,5 +1,6 @@
 """The Cyheadgen package."""
 
-from .lexer import cyheadgen_lexer
+from .lexer import CyHeadGenLexer
+from .parser import CyHeadGenParser
 
-__all__ = ["cyheadgen_lexer"]
+__all__ = ["CyHeadGenLexer", "CyHeadGenParser"]

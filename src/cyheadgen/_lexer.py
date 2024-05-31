@@ -39,6 +39,7 @@ tokens = keywords + (
     "COMMA",
     "SEMI",
     "COLON",
+    "DOT",
     "SHARP",
     "STAR",
     "LT",
@@ -67,21 +68,16 @@ t_RBRACE = r"\}"
 t_COMMA = r","
 t_SEMI = r";"
 t_COLON = r":"
+t_DOT = r"\."
 t_SHARP = r"\#"
 t_STAR = r"\*"
 t_LT = r"\<"
 t_GT = r"\>"
 
-# Integer literal
+# literals (integer, float, string and single char)
 t_ICONST = r"\d+([uU]|[lL]|[uU][lL]|[lL][uU])?"
-
-# Floating literal
 t_FCONST = r"((\d+)(\.\d+)(e(\+|-)?(\d+))? | (\d+)e(\+|-)?(\d+))([lL]|[fF])?"
-
-# String literal
 t_SCONST = r"\"([^\\\n]|(\\.))*?\""
-
-# Character constant 'c' or L'c'
 t_CCONST = r"(L)?\'([^\\\n]|(\\.))*?\'"
 
 
