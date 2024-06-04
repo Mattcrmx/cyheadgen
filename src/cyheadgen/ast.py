@@ -1,8 +1,10 @@
 """AST module."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Literal, Optional
+from typing import Literal
 
 
 def _resolve_type(value: str) -> str:
@@ -22,7 +24,10 @@ def _resolve_type(value: str) -> str:
 class Node:
     """Node class."""
 
-    pass
+    @property
+    def representation(self) -> str:
+        """The Node representation in cython."""
+        return ""
 
 
 class Type(str, Enum):
@@ -57,7 +62,7 @@ class Header(Node):
 class Macro(Node):
     """Macro Node."""
 
-    name: Optional[str]
+    name: str | None
     type: Literal["ifndef", "define", "endif"]
 
 
@@ -67,12 +72,20 @@ class Argument(Node):
 
     name: str
     type: str = "int"
-    value: Optional[str] = None
+    value: str | None = None
 
     def __post_init__(self) -> None:
         """Initialize the type."""
         if self.value is not None:
             self.type = _resolve_type(value=self.value)
+
+    @property
+    def representation(self) -> str:
+        """The Argument representation."""
+        base_repr = f"{self.type} {self.name}"
+        if self.value is not None:
+            base_repr += f"= {self.value}"
+        return base_repr
 
 
 @dataclass(frozen=True)
@@ -80,7 +93,13 @@ class CEnum(Node):
     """Enum Node."""
 
     name: str
-    attributes: List[Argument]
+    attributes: list[Argument]
+
+    @property
+    def representation(self) -> str:
+        """Cython representation for an Enum."""
+        attributes = [f"\t{attr.representation}\n" for attr in self.attributes]
+        return f"cdef enum {self.name}:\n{attributes}"
 
 
 @dataclass
@@ -89,4 +108,14 @@ class Function(Node):
 
     name: str
     type: str
-    parameters: List[Argument]
+    parameters: list[Argument] | str
+
+    @property
+    def representation(self) -> str:
+        """The function representation."""
+        if isinstance(self.parameters, str):
+            params = ""
+        else:
+            params = ", ".join([p.representation for p in self.parameters])
+
+        return f"{self.type} {self.name}({params})"
