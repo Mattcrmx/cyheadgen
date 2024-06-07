@@ -98,8 +98,22 @@ class CEnum(Node):
     @property
     def representation(self) -> str:
         """Cython representation for an Enum."""
-        attributes = [f"\t{attr.representation}\n" for attr in self.attributes]
-        return f"cdef enum {self.name}:\n{attributes}"
+        attributes = "\n".join([f"\t{attr.representation}" for attr in self.attributes])
+        return f"cdef enum {self.name}:\n{attributes}\n"
+
+
+@dataclass
+class CStruct(Node):
+    """C struct type."""
+
+    name: str
+    attributes: list[Argument]
+
+    @property
+    def representation(self) -> str:
+        """Cython representation for a Struct."""
+        attributes = "\n".join([f"\t{attr.representation}" for attr in self.attributes])
+        return f"cdef struct {self.name}:\n{attributes}\n"
 
 
 @dataclass

@@ -24,7 +24,8 @@ class CyHeadGenParser:
             the parsed input string.
         """
         result: list[Node] = self._parser.parse(data, **kwargs)  # mypy needs some help
-        return result
+        # parse from bottom up so we need to reverse to have the correct order
+        return result[::-1]
 
     @classmethod
     def parse_file(cls, file_path: str, **kwargs: str | bool) -> list[Node]:

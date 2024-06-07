@@ -20,10 +20,11 @@ def _generate_from_productions(productions: list[Node], header_name: str) -> str
     cython_header = f'cdef extern from "{header_name}":\n'
 
     for prod in productions:
-        cython_repr = f"\t{prod.representation}\n" if prod.representation != "" else ""
+        cython_repr = f"{prod.representation}\n" if prod.representation != "" else ""
         cython_header += cython_repr
 
-    return cython_header
+    # add base indentation, suboptimal but good enough for now
+    return "\n\t".join(cython_header.split("\n"))
 
 
 class CythonHeaderGenerator:

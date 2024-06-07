@@ -2,7 +2,7 @@
 # type: ignore
 import cyheadgen._lexer as lexer_module
 import ply.yacc as yacc
-from cyheadgen.ast import Function, Header, Macro, Argument, CEnum
+from cyheadgen.ast import Function, Header, Macro, Argument, CEnum, CStruct
 
 tokens = lexer_module.tokens
 
@@ -21,7 +21,9 @@ def p_header_file(p):
 def p_declaration(p):
     """declaration : function
                    | header
-                   | macro"""
+                   | macro
+                   | enum
+                   | struct"""
     p[0] = p[1]
 
 
@@ -36,8 +38,8 @@ def p_function(p):
                 | type STAR ID LPAREN VOID RPAREN SEMI"""
     if "*" in p:
         p[0] = Function(
-            name=p[3],
-            type=f"{p[2]}{p[1]}",
+            name=f"{p[2]}{p[3]}",
+            type=p[1],
             parameters=p[5]
         )
     else:
@@ -48,59 +50,13 @@ def p_function(p):
         )
 
 
-def p_struct_or_union_specifier(p):
-    """struct_or_union_specifier : struct_or_union ID LBRACE struct_declaration_list RBRACE
-                                 | struct_or_union LBRACE struct_declaration_list RBRACE
-                                 | struct_or_union ID"""
-    pass
-
-
-def p_struct_or_union(p):
-    """struct_or_union : STRUCT
-                       | UNION
-                       """
-    p[0] = p[1]
-
-
-def p_struct_declaration_list(p):
-    """struct_declaration_list : struct_declaration
-                               | struct_declaration_list struct_declaration"""
-    if len(p) == 2:
-        p[0] = [p[1]]
+def p_struct(p):
+    """struct : TYPEDEF STRUCT ID LBRACE struct_parameters RBRACE ID SEMI
+              | STRUCT ID LBRACE struct_parameters RBRACE SEMI """
+    if len(p) == 9:
+        p[0] = CStruct(name=p[3], attributes=p[5])
     else:
-        p[1].extend(p[2])
-        p[0] = p[1]
-
-
-def p_struct_declaration(p):
-    """struct_declaration : specifier_qualifier_list struct_declarator_list SEMI"""
-    p[0] = p[1]
-
-
-def p_specifier_qualifier_list(p):
-    """specifier_qualifier_list : type specifier_qualifier_list
-                                | type"""
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[1].extend(p[2])
-        p[0] = p[1]
-
-
-def p_struct_declarator_list_1(p):
-    """struct_declarator_list : struct_declarator
-                              | struct_declarator_list COMMA struct_declarator"""
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[1].extend(p[3])
-        p[0] = p[1]
-
-
-def p_struct_declarator_1(p):
-    """struct_declarator : declarator
-                         | declarator COLON constant"""
-    pass
+        p[0] = CStruct(name=p[2], attributes=p[4])
 
 
 def p_declarator_1(p):
@@ -135,19 +91,19 @@ def p_direct_declarator_2(p):
         p[0] = p[1:]
 
 
-def p_enum_specifier(p):
-    """enum_specifier : ENUM ID LBRACE enumerator_list RBRACE"""
+def p_enum(p):
+    """enum : ENUM ID LBRACE enumerator_list RBRACE SEMI"""
     p[0] = CEnum(name=p[2], attributes=p[4])
 
 
 def p_enumerator_list(p):
     """enumerator_list : enumerator
-                       | enumerator_list COMMA enumerator"""
+                       | enumerator COMMA enumerator_list"""
     if len(p) == 2:
         p[0] = [p[1]]
     else:
-        p[1].extend(p[3])
-        p[0] = p[1]
+        p[3].append(p[1])
+        p[0] = p[3]
 
 
 def p_enumerator(p):
@@ -169,7 +125,7 @@ def p_parameters(p):
     elif len(p) == 4:
         p[0] = [Argument(name=p[3], type=f"{p[1]}{p[2]}")]
 
-    # insert to preserver to arguments order
+    # insert to preserve to arguments order
     elif "*" in p[1:]:
         p[5].insert(0, Argument(name=p[3], type=f"{p[1]}{p[2]}"))
         p[0] = p[5]
@@ -186,6 +142,34 @@ def p_parameter_type_list(p):
     else:
         p[4].extend(Argument(type=p[1], name=p[2]))
         p[0] = p[4]
+
+
+def p_struct_parameters(p):
+    """struct_parameters : enum_parameter SEMI
+                  | type ID SEMI
+                  | type pointer ID SEMI
+                  | type ID SEMI struct_parameters
+                  | type pointer ID SEMI struct_parameters"""
+    if len(p) == 3:
+        # enum param
+        p[0] = [p[1]]
+    elif len(p) == 4:
+        p[0] = [Argument(name=p[2], type=p[1])]
+    elif len(p) == 5:
+        if p[2] == "*":
+            p[0] = [Argument(name=p[3], type=f"{p[1]}{p[2]}")]
+        else:
+            p[4].insert(0, Argument(name=p[2], type=p[1]))
+            p[0] = p[4]
+    else:
+        # insert to preserve to arguments order
+        p[5].insert(0, Argument(name=p[3], type=f"{p[1]}{p[2]}"))
+        p[0] = p[5]
+
+
+def p_struct_enum_parameter(p):
+    """enum_parameter : ENUM ID ID"""
+    p[0] = Argument(name=p[3], type=p[2])
 
 
 def p_pointer(p):
@@ -218,8 +202,7 @@ def p_types(p):
             | SIGNED
             | UNSIGNED
             | ID
-            | struct_or_union_specifier
-            | enum_specifier
+            | ENUM
             """
     p[0] = p[1]
 
@@ -260,9 +243,3 @@ def p_error(t):
 
 
 ply_parser = yacc.yacc()
-
-if __name__ == "__main__":
-
-    simple_fn = "#endif // API_H"
-    p = ply_parser.parse(simple_fn)
-    print(p)
