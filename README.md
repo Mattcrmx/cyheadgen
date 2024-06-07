@@ -32,3 +32,17 @@ parser = CyHeadGenParser()
 my_func = "int super_func(int arg1, int *arg2);"
 print(parser(my_func))  # [Function(name='super_func', type='int', parameters=[Argument(name='arg1', type='int', value=None), Argument(name='arg2', type='int*', value=None)])]
 ```
+
+### Generation
+
+The Generator is built on the two previous structures, and supports generating cython headers from an input string or
+from a header file.
+```python
+from cyheadgen import CythonHeaderGenerator
+cygen = CythonHeaderGenerator()
+
+my_func = "int super_func(int arg1, int *arg2);"
+print(cygen(my_func, header_name="toto.h"))  # "int super_func(int arg1, int *arg2)"
+
+print(cygen.generate_from_file(filepath="./toto.h"))
+```
