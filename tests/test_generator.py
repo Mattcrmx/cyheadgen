@@ -23,5 +23,5 @@ def test_simple_generator(cygen: CythonHeaderGenerator) -> None:
 
     assert (
         cygen(inp, header_name="core/api.h")
-        == 'cdef extern from "core/api.h":\n\tint literal_watch(float interval, int time, char* name, int pid, int stats)\n\tDescriptorsArray generate_fd_stats_by_value(int pid, float interval, int time_limit)\n\t*DescriptorsArray new_desc_array()\n\t*Arguments new_empty_args()\n\t*Arguments new_args(int interval, int time, char* name, int pid, int stats)\n'
+        == 'cdef extern from "core/api.h":\n\tArguments *new_args(int interval, int time, char* name, int pid, int stats)\n\tArguments *new_empty_args()\n\tDescriptorsArray *new_desc_array()\n\tDescriptorsArray generate_fd_stats_by_value(int pid, float interval, int time_limit)\n\tint literal_watch(float interval, int time, char* name, int pid, int stats)\n\t'
     )

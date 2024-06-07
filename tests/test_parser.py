@@ -21,8 +21,8 @@ def parser() -> CyHeadGenParser:
             "CustomStruct *new_args(int interval, int time, char *name, int pid, int stats);",
             [
                 Function(
-                    name="new_args",
-                    type="*CustomStruct",
+                    name="*new_args",
+                    type="CustomStruct",
                     parameters=[
                         Argument(name="interval", type="int", value=None),
                         Argument(name="time", type="int", value=None),
